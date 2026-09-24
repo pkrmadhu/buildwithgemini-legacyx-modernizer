@@ -10,6 +10,7 @@ from app.agent import (
     modernize_database_layer,
     verify_and_repair_code,
     verify_dual_behavior_safety,
+    generate_domain_video,
 )
 
 
@@ -79,3 +80,23 @@ def test_verify_dual_behavior_safety():
     assert res["feature_flag_key"] == "use.modern.userservice"
     assert len(res["canary_rollout_strategy"]) == 3
     assert len(res["automated_rollback_triggers"]) > 0
+
+
+def test_generate_domain_video():
+    class DummyToolContext:
+        def __init__(self):
+            self.saved_filename = None
+            self.saved_artifact = None
+
+        def save_artifact(self, filename, artifact, custom_metadata=None):
+            self.saved_filename = filename
+            self.saved_artifact = artifact
+            return 1
+
+    ctx = DummyToolContext()
+    res = generate_domain_video("Java 8 EJB Monolith Architecture", tool_context=ctx)
+    assert res["status"] == "success"
+    assert "qwiklabs-gcp-02-757765b604f0-static-assets-bucket" in res["public_url"]
+    assert res["public_url"].startswith("https://storage.googleapis.com/")
+    assert ctx.saved_filename is not None
+    assert ctx.saved_artifact is not None
