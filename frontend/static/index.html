@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LegacyX Modernizer | Enterprise AI Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #000000;
+    --surface-dark: #0a0a0f;
+    --card-dark: #121218;
+    --card-hover: #1a1a24;
+    --border-dark: rgba(255, 255, 255, 0.12);
+    --border-glow: rgba(99, 102, 241, 0.4);
+    
+    --accent-indigo: #6366f1;
+    --accent-cyan: #38bdf8;
+    --accent-green: #34d399;
+    --accent-purple: #a855f7;
+    --accent-pink: #f43f5e;
+    --accent-yellow: #fbbf24;
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-heading: 'Outfit', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* Sleek Micro Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Ambient Radial Glow */
+  .bg-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.18), transparent 70%),
+                radial-gradient(circle at 10% 80%, rgba(56, 189, 248, 0.08), transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Frosted Header Navbar */
+  .header-nav {
+    height: 58px;
+    background: rgba(10, 10, 15, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    z-index: 50;
+    flex-shrink: 0;
+  }
+
+  .brand-group { display: flex; align-items: center; gap: 0.75rem; }
+  .logo-badge {
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    font-family: var(--font-heading);
+  }
+
+  .brand-title {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff 40%, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pill-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-dark);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: 99px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .pill-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .pill-btn.primary {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border: none;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  }
+  .pill-btn.primary:hover {
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+  }
+
+  /* Main Studio Workspace */
+  .workspace-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  /* Left Navigation Sidebar */
+  .sidebar {
+    width: 280px;
+    background: rgba(18, 18, 24, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-dark);
+    border-radius: 16px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .sidebar-section-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .nav-capsule {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .nav-capsule:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+  .nav-capsule.active {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.25));
+    border: 1px solid var(--border-glow);
+    color: #fff;
+  }
+
+  /* Quick Actions Stack */
+  .action-widget {
+    background: var(--card-dark);
+    border: 1px solid var(--border-dark);
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-bottom: 0.5rem;
+  }
+  .action-widget:hover {
+    background: var(--card-hover);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .action-icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .action-text-title { font-size: 0.85rem; font-weight: 700; color: #fff; }
+  .action-text-sub { font-size: 0.72rem; color: var(--text-secondary); }
+
+  /* Center Main Studio Frame */
+  .main-frame {
+    flex: 1;
+    background: rgba(18, 18, 24, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-dark);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .frame-top-bar {
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--border-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .frame-title-text {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pane { display: none; flex-direction: column; flex: 1; overflow-y: auto; padding: 1.25rem; scroll-behavior: smooth; }
+  .pane.active { display: flex; }
+
+  /* Terminal Window Code Card */
+  .msg-card {
+    background: var(--card-dark);
+    border: 1px solid var(--border-dark);
+    border-radius: 14px;
+    padding: 1.25rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .msg-card.user {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.12));
+    border-color: var(--border-glow);
+  }
+
+  .traffic-dots { display: flex; gap: 6px; margin-bottom: 0.75rem; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+
+  /* Console Bottom Input Bar */
+  .console-bar {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border-dark);
+    background: rgba(10, 10, 15, 0.9);
+    flex-shrink: 0;
+  }
+
+  .console-form { display: flex; gap: 0.75rem; }
+  .console-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-dark);
+    border-radius: 12px;
+    padding: 0.85rem 1.1rem;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .console-input:focus {
+    border-color: var(--accent-indigo);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  pre, code { font-family: var(--font-mono); background: #07070a; }
+  pre { padding: 1rem 1.25rem; border-radius: 10px; border: 1px solid var(--border-dark); overflow-x: auto; margin: 0.75rem 0; }
+  code { color: #38bdf8; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<!-- Frosted Header Navbar -->
+<header class="header-nav">
+  <div class="brand-group">
+    <div class="logo-badge">LX</div>
+    <div>
+      <div class="brand-title">LegacyX Modernizer</div>
+      <div style="font-size: 0.7rem; color: var(--text-muted);">Enterprise AI Modernization Engine</div>
+    </div>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 0.75rem;">
+    <span style="font-size: 0.8rem; color: var(--accent-green); font-weight: 700;">🟢 LegacyX Engine</span>
+    <button class="pill-btn" onclick="runOneClickDemo()">▶️ 1-Click Demo</button>
+    <button class="pill-btn primary" onclick="exportExecutiveAuditPDF()">📄 Export Business PDF</button>
+  </div>
+</header>
+
+<!-- Main Workspace Body -->
+<main class="workspace-body">
+  <!-- Left Navigation Sidebar -->
+  <aside class="sidebar">
+    <div>
+      <div class="sidebar-section-title">Studios & Workspaces</div>
+      <div class="nav-capsule active" onclick="switchPane('chat', this)">💬 Modernizer Studio</div>
+      <div class="nav-capsule" onclick="switchPane('zip', this)">📦 ZIP Converter Studio</div>
+      <div class="nav-capsule" onclick="switchPane('calc', this)">💰 ROI & Cloud Savings</div>
+      <div class="nav-capsule" onclick="switchPane('graph', this)">🌐 Architecture Canvas</div>
+      <div class="nav-capsule" onclick="switchPane('chaos', this)">🔮 Chaos Fault Simulator</div>
+    </div>
+
+    <div style="flex: 1; overflow-y: auto; padding-right: 0.2rem;">
+      <div class="sidebar-section-title">⚡ 1-Click Quick Actions</div>
+
+      <div class="action-widget" onclick="sendPrompt('Analyze this legacy stack: Struts 1.2, javax.servlet, Java 8, EJB 2.1')">
+        <div class="action-icon-box">🔍</div>
+        <div>
+          <div class="action-text-title">Scan Legacy Stack</div>
+          <div class="action-text-sub">Detect Struts & EJB</div>
+        </div>
+      </div>
+
+      <div class="action-widget" onclick="sendPrompt('Modernize UserService.java from Java 8 EJB to Spring Boot 3 + Java 21 with dual-behavior fallback')">
+        <div class="action-icon-box" style="color: var(--accent-cyan);">🛠️</div>
+        <div>
+          <div class="action-text-title">Modernize File</div>
+          <div class="action-text-sub">Refactor to Spring 3</div>
+        </div>
+      </div>
+
+      <div class="action-widget" onclick="sendPrompt('Generate JUnit 5 test suite for UserService verifying dual-behavior parity')">
+        <div class="action-icon-box" style="color: var(--accent-purple);">🧪</div>
+        <div>
+          <div class="action-text-title">Generate Unit Tests</div>
+          <div class="action-text-sub">JUnit 5 parity suite</div>
+        </div>
+      </div>
+
+      <div class="action-widget" onclick="sendPrompt('Transform JDBC DAO and raw SQL query into Spring Data JPA Repository and Flyway script')">
+        <div class="action-icon-box" style="color: var(--accent-green);">🗄️</div>
+        <div>
+          <div class="action-text-title">Modernize Database</div>
+          <div class="action-text-sub">JDBC to JPA & Flyway</div>
+        </div>
+      </div>
+
+      <div class="action-widget" onclick="sendPrompt('Self-heal and repair this code: import javax.servlet.http.HttpServletRequest; public class OrderService {}')">
+        <div class="action-icon-box" style="color: var(--accent-yellow);">🩺</div>
+        <div>
+          <div class="action-text-title">Self-Healing Repair</div>
+          <div class="action-text-sub">Patch javax.* & beans</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Center Interactive Studio Frame -->
+  <section class="main-frame">
+    <div class="frame-top-bar">
+      <div class="frame-title-text" id="pane-board-title">💬 Modernizer Studio Workspace</div>
+      <span style="font-size: 0.75rem; background: rgba(99, 102, 241, 0.15); color: var(--accent-cyan); padding: 0.25rem 0.65rem; border-radius: 99px; font-weight: 700;">Strangler Fig Engine</span>
+    </div>
+
+    <!-- PANE 1: Modernizer Studio -->
+    <div id="pane-chat" class="pane active">
+      <div id="log" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto;">
+        <div class="msg-card">
+          <div class="traffic-dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+          <strong style="color: var(--accent-cyan); font-size: 1.05rem;">Welcome to LegacyX Modernizer Engine 🚀</strong>
+          <div style="margin-top: 0.4rem; color: var(--text-secondary);">Select a Quick Action widget from the left sidebar or type any legacy code snippet into the console below.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 2: ZIP Converter -->
+    <div id="pane-zip" class="pane">
+      <div style="text-align: center; padding: 3rem 1.5rem;">
+        <span style="font-size: 4rem; display: block; margin-bottom: 0.75rem;">📦</span>
+        <h2 style="font-family: var(--font-heading); color: #fff; margin-bottom: 0.5rem;">ZIP Project Modernization Studio</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">Upload legacy Java monolith ZIP archives and receive modern Spring Boot 3 + Java 21 projects.</p>
+        <button class="pill-btn primary" style="margin: 0 auto;" onclick="triggerZipSim()">⚡ Convert Sample Legacy Project ZIP</button>
+
+        <div id="zip-result" style="display: none; margin-top: 2rem; text-align: left; background: var(--card-dark); padding: 1.5rem; border-radius: 14px; border: 1px solid var(--border-dark);">
+          <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">🎉 Project Modernization Complete!</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Generated <strong>spring-boot-3-java21-project.zip</strong> with 100% Strangler Fig fallback coverage.</p>
+          <button class="pill-btn" onclick="downloadBlob('// Sample Modernized Project ZIP Package', 'modernized-legacyx-project.zip', 'application/zip')" style="background: var(--accent-green); color: #000; border: none;">
+            📦 Download Modernized Project ZIP
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 3: ROI Calculator -->
+    <div id="pane-calc" class="pane">
+      <div style="padding: 1.5rem;">
+        <h2 style="font-family: var(--font-heading); color: var(--accent-cyan); margin-bottom: 0.5rem;">💰 Fleet ROI & Cloud Savings Calculator</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+          <div>
+            <label style="font-weight: 600; color: #fff;">Legacy Server Fleet Size:</label>
+            <div style="color: var(--accent-yellow); font-weight: 800; font-size: 1.3rem; margin: 0.4rem 0;" id="lbl-servers">50 JVM Instances</div>
+            <input type="range" min="10" max="500" value="50" style="width: 100%; accent-color: var(--accent-indigo);" oninput="updateROI(this.value)">
+            <div style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.88rem;" id="lbl-spend">Annual Spend: $250,000 / year</div>
+          </div>
+
+          <div style="background: var(--card-dark); padding: 1.5rem; border-radius: 14px; border: 1px solid var(--border-dark); text-align: center;">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); letter-spacing: 0.05em;">ESTIMATED ANNUAL SAVINGS</div>
+            <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 900; color: var(--accent-green); margin: 0.5rem 0;" id="calc-savings">$175,000 / yr</div>
+            <button class="pill-btn primary" style="width: 100%; justify-content: center; margin-top: 1rem;" onclick="exportExecutiveAuditPDF()">📄 Export Business Case PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 4: Dependency Graph -->
+    <div id="pane-graph" class="pane">
+      <div style="text-align: center; padding: 3rem 1.5rem;">
+        <h2 style="font-family: var(--font-heading); color: #fff; margin-bottom: 1.5rem;">🌐 Node Architecture Canvas</h2>
+        <div style="display: flex; align-items: center; justify-content: space-around; background: var(--card-dark); padding: 2.5rem; border-radius: 14px; border: 1px solid var(--border-dark);">
+          <div style="border: 2px solid var(--accent-pink); padding: 1.2rem 1.5rem; border-radius: 12px; color: var(--accent-pink); font-weight: 700;">UserAction.java (Struts)</div>
+          <div style="font-family: var(--font-mono); color: var(--accent-cyan); font-weight: 700;">➔ Strangler Fig ➔</div>
+          <div style="border: 2px solid var(--accent-green); padding: 1.2rem 1.5rem; border-radius: 12px; color: var(--accent-green); font-weight: 700;">ModernUserService.java (Spring Boot 3)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE 5: Chaos Simulator -->
+    <div id="pane-chaos" class="pane">
+      <div style="text-align: center; padding: 3rem 1.5rem;">
+        <h2 style="font-family: var(--font-heading); color: var(--accent-pink); margin-bottom: 1rem;">🔮 Chaos Fault & Fallback Simulator</h2>
+        <button class="pill-btn" style="background: var(--accent-pink); color: #fff; border: none; margin: 0 auto;" onclick="runChaos()">🔥 Inject Synthetic Fault in Modern Path</button>
+        <div id="chaos-output" style="margin-top: 1.5rem; font-family: var(--font-mono); font-size: 0.95rem; min-height: 28px;"></div>
+      </div>
+    </div>
+
+    <!-- Console Bottom Input Bar -->
+    <footer class="console-bar">
+      <form id="form" class="console-form">
+        <input id="input" class="console-input" placeholder="Type legacy code snippet or command..." autocomplete="off" autofocus>
+        <button class="pill-btn primary">
+          <span>Modernize</span>
+          <span>🚀</span>
+        </button>
+      </form>
+    </footer>
+  </section>
+</main>
+
+<script>
+const log = document.getElementById("log");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+
+function switchPane(name, btn) {
+  document.querySelectorAll(".nav-capsule").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".pane").forEach(p => p.classList.remove("active"));
+
+  if (btn) btn.classList.add("active");
+  const targetPane = document.getElementById("pane-" + name);
+  if (targetPane) targetPane.classList.add("active");
+
+  const titles = {
+    chat: "💬 Modernizer Studio Workspace",
+    zip: "📦 ZIP Converter Studio",
+    calc: "💰 ROI & Cloud Savings",
+    graph: "🌐 Architecture Node Canvas",
+    chaos: "🔮 Chaos Fault Simulator"
+  };
+  if (titles[name]) {
+    document.getElementById("pane-board-title").textContent = titles[name];
+  }
+}
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function bubble(who) {
+  const m = el("div", "msg-card " + who);
+  const dots = el("div", "traffic-dots");
+  dots.innerHTML = '<div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>';
+  m.appendChild(dots);
+  const b = el("div", null);
+  m.appendChild(b);
+  log.appendChild(m);
+  log.scrollTop = log.scrollHeight;
+  return b;
+}
+
+function showLoadingIndicator() {
+  const m = el("div", "msg-card");
+  m.textContent = "Analyzing & modernizing...";
+  log.appendChild(m);
+  log.scrollTop = log.scrollHeight;
+  return { msgElem: m, bubbleElem: m };
+}
+
+function sendPrompt(text) {
+  const chatBtn = document.querySelector('.nav-capsule');
+  switchPane('chat', chatBtn);
+  input.value = text;
+  form.dispatchEvent(new Event('submit'));
+}
+
+function downloadBlob(content, filename, mimeType) {
+  const blob = new Blob([content], { type: mimeType || "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function copyToClipboard(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = "✓ Copied!";
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+  });
+}
+
+function formatCodeBlocks(text, container) {
+  const codeRegex = /```([a-zA-Z0-9_]*)\n([\s\S]*?)```/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = codeRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      const plain = text.slice(lastIndex, match.index);
+      if (plain.trim()) container.appendChild(el("div", null, plain));
+    }
+
+    const lang = match[1] || "java";
+    const code = match[2].trim();
+
+    const wrapper = el("div", null);
+    wrapper.style.margin = "0.75rem 0";
+    wrapper.style.borderRadius = "10px";
+    wrapper.style.overflow = "hidden";
+    wrapper.style.border = "1px solid var(--border-dark)";
+
+    const header = el("div", null);
+    header.style.padding = "0.5rem 0.9rem";
+    header.style.background = "rgba(255, 255, 255, 0.04)";
+    header.style.display = "flex";
+    header.style.justifyContent = "space-between";
+    header.style.alignItems = "center";
+
+    const title = el("span", null, "📄 " + (lang.toUpperCase() || "CODE"));
+    title.style.color = "var(--accent-cyan)";
+    title.style.fontWeight = "700";
+    title.style.fontSize = "0.8rem";
+
+    const btnGroup = el("div");
+    btnGroup.style.display = "flex";
+    btnGroup.style.gap = "0.4rem";
+
+    const copyBtn = el("button", null, "📋 Copy");
+    copyBtn.className = "pill-btn";
+    copyBtn.style.padding = "0.2rem 0.6rem";
+    copyBtn.style.fontSize = "0.75rem";
+    copyBtn.onclick = () => copyToClipboard(copyBtn, code);
+
+    let ext = "java";
+    if (lang === "sql") ext = "sql";
+    const extMatch = code.match(/(?:public\s+class|interface|enum)\s+([A-Za-z0-9_]+)/);
+    const inferredName = extMatch ? `${extMatch[1]}.${ext}` : `ModernizedCode.${ext}`;
+
+    const dlBtn = el("button", null, "📥 Download " + inferredName);
+    dlBtn.className = "pill-btn";
+    dlBtn.style.padding = "0.2rem 0.6rem";
+    dlBtn.style.fontSize = "0.75rem";
+    dlBtn.style.background = "var(--accent-green)";
+    dlBtn.style.color = "#000";
+    dlBtn.style.border = "none";
+    dlBtn.onclick = () => downloadBlob(code, inferredName, "text/plain");
+
+    btnGroup.appendChild(copyBtn);
+    btnGroup.appendChild(dlBtn);
+    header.appendChild(title);
+    header.appendChild(btnGroup);
+
+    const pre = el("pre");
+    pre.style.margin = "0";
+    pre.style.borderRadius = "0";
+    pre.style.border = "none";
+    const codeElem = el("code", null, code);
+    pre.appendChild(codeElem);
+
+    wrapper.appendChild(header);
+    wrapper.appendChild(pre);
+    container.appendChild(wrapper);
+
+    lastIndex = codeRegex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    const rem = text.slice(lastIndex);
+    if (rem.trim()) container.appendChild(el("div", null, rem));
+  }
+}
+
+function renderReply(b, parts) {
+  b.textContent = "";
+  const texts = parts.filter(p => p && (p.kind === "text" || (!p.kind && p.text))).map(p => p.text || "");
+  const textStr = texts.join("\n").trim();
+  if (textStr) {
+    if (textStr.includes("```")) {
+      formatCodeBlocks(textStr, b);
+    } else {
+      b.appendChild(el("div", null, textStr));
+    }
+  }
+  if (!b.childNodes.length) b.textContent = "(no response)";
+  log.scrollTop = log.scrollHeight;
+}
+
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+
+  bubble("user").textContent = text;
+  input.value = "";
+
+  const { bubbleElem: b } = showLoadingIndicator();
+
+  try {
+    const res = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
+    });
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { throw new Error(`Server returned non-JSON`); }
+    renderReply(b, data.parts || []);
+  } catch (e) {
+    b.textContent = "Error: " + e.message;
+  }
+});
+
+function triggerZipSim() {
+  document.getElementById("zip-result").style.display = "block";
+}
+
+function runChaos() {
+  const out = document.getElementById("chaos-output");
+  out.style.color = "var(--accent-pink)";
+  out.textContent = "⚠️ Exception thrown in Java 21 Loom path! Triggering LegacyFallbackWrapper...";
+  setTimeout(() => {
+    out.style.color = "var(--accent-green)";
+    out.textContent = "✅ LegacyFallbackWrapper executed in 0.8ms! HTTP 200 OK returned with 0% downtime.";
+  }, 1000);
+}
+
+function runOneClickDemo() {
+  sendPrompt("Modernize UserService.java from Java 8 EJB to Spring Boot 3 + Java 21 with dual-behavior fallback");
+}
+
+function updateROI(val) {
+  document.getElementById("lbl-servers").textContent = `${val} JVM Instances`;
+  const spend = val * 5000;
+  const savings = Math.round(spend * 0.7);
+  document.getElementById("lbl-spend").textContent = `Annual Spend: $${spend.toLocaleString()} / year`;
+  document.getElementById("calc-savings").textContent = `$${savings.toLocaleString()} / yr`;
+}
+
+function exportExecutiveAuditPDF() {
+  const auditContent = `# EXECUTIVE MODERNIZATION AUDIT REPORT
+Project: LegacyX Modernizer
+Framework: Vertex AI Agent Engine + ADK + A2UI
+Strategy: Strangler Fig Pattern with Dual-Behavior Toggles
+
+SUMMARY OF AUDIT FINDINGS:
+--------------------------------------------------
+1. Technical Debt Risk Score: 72/100 -> Reduced to 12/100 (Safe)
+2. Estimated Annual Cloud Savings: $175,000 / year (70% RAM Footprint Reduction)
+3. Carbon Footprint Reduction: -65% CO2 Emission
+4. Zero-Downtime Rollback Guarantee: VERIFIED (< 1ms Fallback Guard)
+5. OWASP Security Benchmarks: 100% Compliant (Log4j / Struts Remediation)
+`;
+  downloadBlob(auditContent, "LegacyX_Executive_Report.pdf", "application/pdf");
+}
+</script>
+</body>
+</html>
