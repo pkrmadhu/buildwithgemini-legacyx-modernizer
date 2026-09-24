@@ -25,7 +25,6 @@ def test_agent_stream() -> None:
     Integration test for the agent stream functionality.
     Tests that the agent returns valid streaming responses.
     """
-
     session_service = InMemorySessionService()
 
     session = session_service.create_session_sync(user_id="test_user", app_name="test")

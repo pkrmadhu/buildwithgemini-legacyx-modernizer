@@ -797,7 +797,7 @@ instruction = schema_manager.generate_system_prompt(
 root_agent = Agent(
     name="root_agent",
     model=Gemini(
-        model="gemini-flash-latest",
+        model="gemini-1.5-flash",
         retry_options=types.HttpRetryOptions(attempts=3),
     ),
     instruction=instruction,

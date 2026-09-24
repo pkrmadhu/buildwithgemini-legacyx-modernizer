@@ -1,7 +1,9 @@
 """FastAPI proxy for a deployed A2A agent with security headers & input validation.
 """
 
+import base64
 import html
+import json
 import os
 import uuid
 
@@ -16,6 +18,7 @@ from a2a.types import (
     Part,
     Role,
     TaskArtifactUpdateEvent,
+    TaskStatusUpdateEvent,
     TextPart,
     TransportProtocol,
 )
@@ -95,12 +98,27 @@ def _extract_parts(parts: list) -> list[dict]:
         elif getattr(root, "data", None) is not None:
             meta = getattr(root, "metadata", None) or {}
             mime = meta.get("mimeType") if isinstance(meta, dict) else None
-            if mime == _A2UI_MIME:
+            if mime == _A2UI_MIME or (isinstance(root.data, dict) and ("beginRendering" in root.data or "surfaceUpdate" in root.data)):
                 out.append({"kind": "a2ui", "data": root.data})
         elif isinstance(root, FilePart):
-            uri = getattr(getattr(root, "file", None), "uri", None)
+            f = getattr(root, "file", None)
+            uri = getattr(f, "uri", None)
+            raw_bytes = getattr(f, "bytes", None)
             if uri:
                 out.append({"kind": "text", "text": uri})
+            elif raw_bytes:
+                try:
+                    decoded = base64.b64decode(raw_bytes).decode("utf-8")
+                    if "<a2a_datapart_json>" in decoded:
+                        for chunk in decoded.split("<a2a_datapart_json>"):
+                            chunk = chunk.strip()
+                            if chunk.startswith("{"):
+                                obj = json.loads(chunk)
+                                mime = obj.get("metadata", {}).get("mimeType")
+                                if mime == _A2UI_MIME or "data" in obj:
+                                    out.append({"kind": "a2ui", "data": obj.get("data", obj)})
+                except Exception:
+                    pass
     return out
 
 
@@ -143,7 +161,6 @@ async def chat(req: Request):
         )
 
         last_task = None
-        got_artifact_update = False
         async for event in a2a_client.send_message(msg):
             if not isinstance(event, tuple):
                 continue
@@ -152,17 +169,27 @@ async def chat(req: Request):
                 last_task = task
                 if getattr(task, "context_id", None):
                     _contexts[user_id] = task.context_id
-            if isinstance(update, TaskArtifactUpdateEvent):
-                got_artifact_update = True
-                parts.extend(_extract_parts(update.artifact.parts))
 
-        if not got_artifact_update and last_task is not None:
+            if isinstance(update, TaskArtifactUpdateEvent):
+                parts.extend(_extract_parts(update.artifact.parts))
+            elif isinstance(update, TaskStatusUpdateEvent) and getattr(update, "status", None):
+                msg_obj = getattr(update.status, "message", None)
+                if msg_obj and getattr(msg_obj, "parts", None):
+                    parts.extend(_extract_parts(msg_obj.parts))
+
+        if not parts and last_task is not None:
             for artifact in getattr(last_task, "artifacts", None) or []:
                 parts.extend(_extract_parts(artifact.parts))
+            for msg_item in getattr(last_task, "history", None) or []:
+                if getattr(msg_item, "role", None) in (Role.agent, "agent"):
+                    parts.extend(_extract_parts(getattr(msg_item, "parts", None) or []))
+            if getattr(last_task, "status", None) and getattr(last_task.status, "message", None):
+                parts.extend(_extract_parts(getattr(last_task.status.message, "parts", None) or []))
 
     if not parts:
         parts = [{"kind": "text", "text": "(The agent didn't return a reply.)"}]
     return JSONResponse({"parts": parts})
+
 
 
 @app.post("/api/roi-calculator")
